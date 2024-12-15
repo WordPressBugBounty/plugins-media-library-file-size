@@ -3,13 +3,13 @@ Contributors: SS88_UK
 Donate link: https://paypal.me/SS88/
 Tags: file size, media library, image size, library size
 Requires at least: 4.1
-Tested up to: 6.6
-Stable tag: 1.6.3
+Tested up to: 6.7
+Stable tag: 1.6.4
 Requires PHP: 5.6
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Displays the Media Library file sizes, including collective variants, and adds the ability to view/download each variant image.
+Displays the Media Library file sizes, including collective variants, and adds the ability to view/download each variant image!
 
 == Description ==
 
@@ -56,6 +56,11 @@ Make sure you are looking at your Media Library, and you are in List view. Grid 
 This is a collective size of your thumbnails (and other sized images).
 
 == Changelog ==
+
+= 1.6.4 =
+* Fix: Remove 'View Variants' link if no variants exist on images
+* Fix: Index/Reindex populates the total size correctly
+* Fix: Translation code fix + prep for later release
 
 = 1.6.3 =
 * Added prior version to trunk for rollback compatibility

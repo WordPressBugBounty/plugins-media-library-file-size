@@ -3,14 +3,15 @@
 Plugin Name: Media Library File Size
 Plugin URI: https://ss88.us/plugins/media-library-file-size?utm_source=wordpress&utm_medium=link&utm_campaign=mlfs
 Description: Creates a new column in your Media Library to show you the file (and collective images) size of files plus more!
-Version: 1.6.3
+Version: 1.6.4
 Author: SS88 LLC
 Author URI: https://ss88.us/?utm_source=wordpress&utm_medium=link&utm_campaign=author_mlfs
+Text Domain: media-library-file-size
 */
 
 class SS88_MediaLibraryFileSize {
 
-    protected $version = '1.6.3';
+    protected $version = '1.6.4';
 	protected $variantJSON = [];
 
     public static function init() {
@@ -88,8 +89,8 @@ class SS88_MediaLibraryFileSize {
 
     function admin_enqueue_scripts() {
 
-        wp_enqueue_script('noty', plugin_dir_url( __FILE__ ) . 'assets/js/noty.js', false, $this->version);
-        wp_enqueue_script('SS88_MLFS-media', plugin_dir_url( __FILE__ ) . 'assets/js/media.js', ['noty'], $this->version);
+        wp_enqueue_script('noty', plugin_dir_url( __FILE__ ) . 'assets/js/noty.js', false, $this->version, true);
+        wp_enqueue_script('SS88_MLFS-media', plugin_dir_url( __FILE__ ) . 'assets/js/media.js', ['noty'], $this->version, true);
         wp_localize_script('SS88_MLFS-media', 'ss88', array('ajax_url' => admin_url( 'admin-ajax.php' )));
 
         wp_enqueue_style('noty', plugin_dir_url( __FILE__ ) . 'assets/css/noty.css', false, $this->version);
@@ -209,7 +210,7 @@ class SS88_MediaLibraryFileSize {
 
 	function manage_media_columns($columns) {
 
-		$columns['SS88_MediaLibraryFileSize'] = __('File Size');
+		$columns['SS88_MediaLibraryFileSize'] = __('File Size', 'media-library-file-size');
 		
 		return $columns;
 	
@@ -219,7 +220,7 @@ class SS88_MediaLibraryFileSize {
 
         if($columnName == 'SS88_MediaLibraryFileSize') {
 
-			echo $this->outputHTML($postID);
+			echo wp_kses_post( $this->outputHTML($postID) );
 
         }
 
@@ -229,7 +230,7 @@ class SS88_MediaLibraryFileSize {
 
         if(!empty($_REQUEST['orderby']) && $_REQUEST['orderby'] == 'SS88_MediaLibraryFileSize') {
 
-            $query->set('order', ($_REQUEST['order']=='asc') ? 'asc' : 'desc');
+            $query->set('order', (isset($_REQUEST['order']) && $_REQUEST['order']=='asc') ? 'asc' : 'desc');
             $query->set('orderby', 'meta_value_num');
             $query->set('meta_key', 'SS88MLFS');
 
@@ -276,7 +277,7 @@ class SS88_MediaLibraryFileSize {
         $ExtaHTML = ($VariantSize) ? '<small>(+'. size_format($VariantSize) .')</small>' : '';
         $MetaSize = get_post_meta($attachment_id, 'SS88MLFS', true);
         $FinalSize = isset($Variants['filesize']) ? $Variants['filesize'] : $MetaSize;
-		$ViewVariants = isset($Variants['sizes']) ? '<button class="ss88MLFS_VV" data-aid="'. $attachment_id .'">View Variants</button>' : '';
+		$ViewVariants = (isset($Variants['sizes']) && count($Variants['sizes'])>0) ? '<button class="ss88MLFS_VV" data-aid="'. $attachment_id .'">View Variants</button>' : '';
 
         if($FinalSize) {
 
@@ -333,7 +334,7 @@ class SS88_MediaLibraryFileSize {
 
 	function admin_footer_view_variants_json() {
 
-		echo '<script> const ss88MLFS_VV = '. json_encode($this->variantJSON) .'; </script>';
+		echo '<script> const ss88MLFS_VV = '. wp_json_encode($this->variantJSON) .'; </script>';
 
 	}
 
@@ -346,7 +347,7 @@ class SS88_MediaLibraryFileSize {
 
 	function debug($msg) {
 
-		error_log("\n" . '[' . date('Y-m-d H:i:s') . '] ' .  $msg, 3, plugin_dir_path(__FILE__) . 'debug.log');
+		error_log("\n" . '[' . gmdate('Y-m-d H:i:s') . '] ' .  $msg, 3, plugin_dir_path(__FILE__) . 'debug.log');
 
 	}
 

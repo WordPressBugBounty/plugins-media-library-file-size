@@ -28,6 +28,8 @@ function SS88_MediaLibraryFileSize_init_MediaLibrary() {
 		},
         addButton: ()=> {
 
+			if(document.querySelector('.ss88indexmedia')) return;
+
 			let cmBtn = (window.location.href.includes('&ss88first')) ? '<div class="ss88arrow">Click me!</div>' : '';
 
             var div = document.createElement('div');
@@ -74,18 +76,29 @@ function SS88_MediaLibraryFileSize_init_MediaLibrary() {
 		},
 		addSize: (d, t) => {
 
-			var div = document.createElement('div');
 			var tooltip = (t) ? '<span class="tooltiptext">'+ t +'</span>' : '';
-			div.innerHTML = '<span class="ss88sizeinfo">('+ d +')'+ tooltip +'</span>';
+			var div = document.querySelector('.ss88sizeinfo');
+			var div_inner = '('+ d +')'+ tooltip;
 
-			if(document.querySelector('h1')) {
+			if(div) {
 
-				document.querySelector('h1').appendChild(div.firstChild);
+				div.innerHTML = div_inner;
 
-			}
-			else {
+			} else {
 
-				document.querySelector('h2').appendChild(div.firstChild);
+				div = document.createElement('div');
+				div.innerHTML = '<span class="ss88sizeinfo">'+ div_inner +'</span>';
+
+				if(document.querySelector('h1')) {
+
+					document.querySelector('h1').appendChild(div.firstChild);
+	
+				}
+				else {
+	
+					document.querySelector('h2').appendChild(div.firstChild);
+	
+				}
 
 			}
 
@@ -127,6 +140,7 @@ function SS88_MediaLibraryFileSize_init_MediaLibrary() {
 
 						SB.sendAlert('success', response.data.message)
 						SB.outputIndex(response.data.html)
+						SB.indexCheck()
 
 					}
 					else {
