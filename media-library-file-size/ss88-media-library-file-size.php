@@ -3,7 +3,7 @@
 Plugin Name: Media Library File Size
 Plugin URI: https://ss88.us/plugins/media-library-file-size?utm_source=wordpress&utm_medium=link&utm_campaign=mlfs
 Description: Creates a new column in your Media Library to show you the file (and collective images) size of files plus more!
-Version: 1.6.4
+Version: 1.6.5
 Author: SS88 LLC
 Author URI: https://ss88.us/?utm_source=wordpress&utm_medium=link&utm_campaign=author_mlfs
 Text Domain: media-library-file-size
@@ -11,7 +11,7 @@ Text Domain: media-library-file-size
 
 class SS88_MediaLibraryFileSize {
 
-    protected $version = '1.6.4';
+    protected $version = '1.6.5';
 	protected $variantJSON = [];
 
     public static function init() {
@@ -100,38 +100,48 @@ class SS88_MediaLibraryFileSize {
 
     function index() {
 
-		ini_set('memory_limit', '512M');
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
 
         $returnData = [];
 		$reindexMedia = isset($_POST['reindex']) ? true : false;
+        $attachmentsPerBatch = 100;
+        $attachmentsPaged = 1;
+        $attachmentProcessed = 0;
+        $noAttachments = false;
 
-		$args = [
-            'post_type' => 'attachment',
-            'numberposts' => -1,
-            'meta_query' => [
-				'relation' => 'OR',
-				[
-					'key' => 'SS88MLFS',
-					'compare' => 'NOT EXISTS'
-				],
-				[
-					'key' => 'SS88MLFSV',
-					'compare' => 'NOT EXISTS'
-				]
-            ]
-		];
+        do {
 
-		if($reindexMedia) {
+            $args = [
+                'post_type' => 'attachment',
+                'posts_per_page' => $attachmentsPerBatch,
+                'paged' => $attachmentsPaged,
+                'meta_query' => [
+                    'relation' => 'OR',
+                    [
+                        'key' => 'SS88MLFS',
+                        'compare' => 'NOT EXISTS'
+                    ],
+                    [
+                        'key' => 'SS88MLFSV',
+                        'compare' => 'NOT EXISTS'
+                    ]
+                ]
+            ];
+    
+            if($reindexMedia) {
 
-			unset($args['meta_query']);
+                unset($args['meta_query']);
+    
+            }
+    
+            $attachments = get_posts($args);
+            if (empty($attachments)) {
+                
+                $noAttachments = true;
+                break;
 
-		}
-
-        $attachments = get_posts($args);
-
-        $CompletedCount = 0;
-
-        if($attachments) {
+            }
 
             foreach($attachments as $attachment) {
 
@@ -139,9 +149,8 @@ class SS88_MediaLibraryFileSize {
 
                 if($this->updateSize($metadata, $attachment->ID)) {
 
-                    $CompletedCount++;
-
-					if($CompletedCount>999) continue;
+                    $attachmentProcessed++;
+					if($attachmentProcessed>999) continue;
 
                     $returnData[] = [
                         'attachment_id' => $attachment->ID,
@@ -151,29 +160,30 @@ class SS88_MediaLibraryFileSize {
                 }
 
             }
+    
+            $attachmentsPaged++;
+    
+        } while (count($attachments) === $attachmentsPerBatch);
 
-            if($CompletedCount) {
-
-				$CompletedCount = number_format($CompletedCount);
-				$finalMessage = 'You just indexed '. $CompletedCount .' attachments. Your media library has been indexed.';
-				if($reindexMedia) $finalMessage = 'You just reindexed '. $CompletedCount .' attachments.';
-                
-                wp_send_json_success([
-                    'html' => $returnData,
-                    'message' => $finalMessage
-                ]);
-            
-            }
-            else wp_send_json_error(['httpcode' => 99, 'body' => 'No attachments were indexed. This usually means they exist, but the file(s) are not on the local server.']);
-
-        }
-        else {
+        if($noAttachments) {
 
             wp_send_json_error(['httpcode' => -1, 'body' => 'There are no attachments to index.']);
 
         }
 
-        echo count($attachments);
+        if($attachmentProcessed) {
+
+            $attachmentProcessed = number_format($attachmentProcessed);
+            $finalMessage = 'You just indexed '. $attachmentProcessed .' attachments. Your media library has been indexed.';
+            if($reindexMedia) $finalMessage = 'You just reindexed '. $attachmentProcessed .' attachments.';
+            
+            wp_send_json_success([
+                'html' => $returnData,
+                'message' => $finalMessage
+            ]);
+        
+        }
+        else wp_send_json_error(['httpcode' => 99, 'body' => 'No attachments were indexed. This usually means they exist, but the file(s) are not on the local server.']);
 
     }
 

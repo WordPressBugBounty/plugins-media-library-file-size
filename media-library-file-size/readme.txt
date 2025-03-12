@@ -4,7 +4,7 @@ Donate link: https://paypal.me/SS88/
 Tags: file size, media library, image size, library size
 Requires at least: 4.1
 Tested up to: 6.7
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 Requires PHP: 5.6
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -13,9 +13,14 @@ Displays the Media Library file sizes, including collective variants, and adds t
 
 == Description ==
 
-Update in 2024: We're thrilled to announce the latest upgrade to our acclaimed Media Library File Size plugin for WordPress – Version 1.6! 🎉 This powerful update takes your media management to new heights, offering an unparalleled level of detail and control over your image variants. Now you can simply click the button 'View Variants' to show a modal with all the listed variants of an image. Details include, full URL, file name, and file size.
+Improve your Media Library functionality by introducing a new column that showcases the sizes of files, including collective variants. This lightweight plugin empowers you to effortlessly sort files based on their respective file sizes and view variants.
 
-Improve your Media Library functionality by introducing a new column that showcases the sizes of files, including collective variants efficiently. This lightweight plugin empowers you to effortlessly sort files based on their respective file sizes. Click the 'Index Media' button after installation.
+Primary Features:
+
+* Tested with meida libraries with over 50,000 attachments
+* View file size of primary file and their variants
+* Sort the media library by file size to find those pesky large file
+* View all variants of an image with the ability to download them
 
 https://youtu.be/Tt5kdo8NH70
 
@@ -56,6 +61,10 @@ Make sure you are looking at your Media Library, and you are in List view. Grid 
 This is a collective size of your thumbnails (and other sized images).
 
 == Changelog ==
+
+= 1.6.5 =
+* Removed memory_limit
+* Indexing/Reindexing will batch process 100 media items at a time (memory saving feature)
 
 = 1.6.4 =
 * Fix: Remove 'View Variants' link if no variants exist on images
