@@ -3,8 +3,8 @@ Contributors: SS88_UK
 Donate link: https://paypal.me/SS88/
 Tags: file size, media library, image size, library size
 Requires at least: 4.1
-Tested up to: 6.7
-Stable tag: 1.6.5
+Tested up to: 6.8
+Stable tag: 1.6.7
 Requires PHP: 5.6
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,14 @@ Images and videos play a crucial role in engaging visitors and making a website 
 * If sizes do not show, you can click the Index Media button within the Media Library to index/re-index items.
 * Shows file size of primary file, plus combined sized for variants (images).
 * Ability to order the media items by file size.
+
+**Check out our other plugins:**
+
+* ✨ [Export Single Post Page](https://wordpress.org/plugins/single-post-page-export/)
+* 🔒 [Two Factor (2FA) Authentication via Email](https://wordpress.org/plugins/two-factor-2fa-via-email/)
+* 🙍‍♂️ [View User Metadata](https://wordpress.org/plugins/view-user-metadata/)
+* 🔠 [Enable Turnstile (Cloudflare) for Gravity Forms](https://wordpress.org/plugins/enable-turnstile-cloudflare-for-gravity-forms/)
+* ⭐️⭐️⭐️⭐️⭐️ [Gravity Forms to FreeScout](https://ss88.us/plugins/gravity-forms-freescout?utm_campaign=OtherPlugins)
 
 == Installation ==
 
@@ -61,6 +69,13 @@ Make sure you are looking at your Media Library, and you are in List view. Grid 
 This is a collective size of your thumbnails (and other sized images).
 
 == Changelog ==
+
+= 1.6.7 =
+* WordPress 'release' loop fix
+
+= 1.6.6 =
+* Fix: innerHTML error
+* Fix: reindex warning
 
 = 1.6.5 =
 * Removed memory_limit

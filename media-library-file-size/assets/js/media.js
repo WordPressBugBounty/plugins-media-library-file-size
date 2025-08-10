@@ -180,7 +180,8 @@ function SS88_MediaLibraryFileSize_init_MediaLibrary() {
 
 				if(tr) {
 
-					tr.querySelector('.SS88_MediaLibraryFileSize').innerHTML = post.html;
+					let tdContent = tr.querySelector('.SS88_MediaLibraryFileSize');
+					if(tdContent) tdContent.innerHTML = post.html;
 
 				}
 			
